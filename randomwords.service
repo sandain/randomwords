@@ -1,0 +1,16 @@
+[Unit]
+Description=randomwords
+Documentation=https://github.com/sandain/randomwords
+
+[Service]
+User=randomwords
+Group=randomwords
+WorkingDirectory=/opt/randomwords
+
+PIDFile=/opt/randomwords/hypnotoad.pid
+ExecStart=/usr/bin/hypnotoad /opt/randomwords/randomwords
+ExecReload=/usr/bin/hypnotoad /opt/randomwords/randomwords
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

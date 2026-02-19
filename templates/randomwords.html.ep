@@ -1,0 +1,10 @@
+% layout 'default';
+% title 'Random Words';
+
+% my @colors = ('red', 'green', 'blue', 'orange', 'purple');
+
+<h1 class='ms-3 mb-3'><%= title %></h1>
+<div class="ms-3">
+  <p>Random words: <% for (my $i = 0; $i < @{$words}; $i++) { %><span class='text-<%= $colors[$i % @colors] %>'><%= $words->[$i] =%></span><% } %></p>
+  <p>Length: <%= length (join ('', @{$words})) %></p>
+</div>

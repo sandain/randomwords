@@ -1,0 +1,85 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Mojolicious::Lite;
+use Math::Random::Secure qw(irand);
+
+# Load words from a file
+my $word_file = 'words.txt';
+
+# Maximum number of words
+my $max = 100;
+
+# Available symbols
+my @symbols = (
+  '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', 
+  '_', '-', '+', '=', '{', '}', ':', ';', '"', '\'',
+  '<', '>', '/', '\\', '?', '.', ',', '[', ']', '|'
+);
+
+sub generate_random_words {
+  my ($num, $capitals, $numbers, $symbols) = @_;
+  my @words;
+  open my $fh, '<', $word_file or die "Could not open $word_file: $!";
+  while (my $word = <$fh>) {
+    $word =~ s/[\r\n]+//;
+    push @words, $word if length ($word);
+  }
+  close $fh;
+  my @random_words = ();
+  for (my $i = 0; $i < $num; $i ++) {
+    push @random_words, $words[irand (scalar @words)];
+  }
+  if ($capitals eq 'on') {
+    for (my $i = 0; $i < irand ($num) + 1; $i ++) {
+      my $wordi = irand (scalar @random_words);
+      my $chari = irand (length $random_words[$wordi]);
+      substr ($random_words[$wordi], $chari, 1) = uc substr ($random_words[$wordi], $chari, 1);
+    }
+  }
+  if ($numbers eq 'on') {
+    for (my $i=0; $i < irand ($num) + 1; $i ++) {
+      splice (@random_words, irand (scalar @random_words) + 1, 0, irand (10));
+    }
+  }
+  if ($symbols eq 'on') {
+    for (my $i=0; $i < irand ($num) + 1; $i ++) {
+      splice (@random_words, irand (scalar @random_words) + 1, 0, $symbols[irand (scalar @symbols)]);
+    }
+  }
+  return @random_words;
+}
+
+get '/'
+=> [ format => [ 'html' ] ]
+=> { format => 'html' }
+=> sub {
+  my $self = shift;
+  $self->render (
+    template => 'form'
+  );
+};
+
+post '/'
+=> [ format => [ 'html' ] ]
+=> { format => 'html' }
+=> sub {
+  my $self = shift;
+  my $num = $self->param ('num');
+  my $capitals = $self->param ('capitals');
+  my $numbers = $self->param ('numbers');
+  my $symbols = $self->param ('symbols');
+  if (! defined ($num) || $num !~ /^\d+$/ || $num < 1 || $num > $max) {
+    $self->render (
+      text => "Invalid number of words. Must be between 1 and $max."
+    );
+    return;
+  }
+  my @random_words = generate_random_words ($num, $capitals, $numbers, $symbols);
+  $self->render (
+    template => 'randomwords',
+    words => \@random_words
+  );
+};
+
+app->start;

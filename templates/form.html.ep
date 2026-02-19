@@ -1,0 +1,25 @@
+% layout 'default';
+% title 'Random Words';
+
+<h1 class="ms-3 mb-3"><%= title %></h1>
+<div class="ms-3 w-25">
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label" for="num">Number of words</label>
+      <input class="form-control" type="text" id="num" name="num">
+    </div>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="capitals" name="capitals">
+      <label class="form-check-label" for="capitals">Randomly capitilize</label>
+    </div>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="numbers" name="numbers">
+      <label class="form-check-label" for="numbers">Insert numbers</label>
+    </div>
+    <div class="mb-3 form-check form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="symbols" name="symbols">
+      <label class="form-check-label" for="symbols">Insert symbols</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
